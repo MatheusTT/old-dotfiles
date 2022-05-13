@@ -1,0 +1,4 @@
+
+.config/BetterDiscord/data/
+.config/BetterDiscord/plugins/*.json
+.config/BetterDiscord/plugins/*.css

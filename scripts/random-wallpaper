@@ -1,0 +1,27 @@
+#!/bin/bash
+
+source ~/scripts/colors.conf
+
+path="/home/$(whoami)/Pictures/wallpapers"
+wallpapers_left_path="/home/$(whoami)/.cache/.wallpapers_left"
+
+
+reset() {
+  wallpapers=($( ls $path | sed "/README.md/d" | shuf ))
+
+  for image in ${wallpapers[@]} ; do
+    echo $image >> $wallpapers_left_path
+  done
+}
+
+# If there's no more images, reset wallpapers_left.txt
+[[ -z "$( cat $wallpapers_left_path )" ]] && reset
+
+
+wallpapers_left=($( cat $wallpapers_left_path ))
+
+feh --no-fehbg --bg-fill "$path/${wallpapers_left[0]}"
+sed -i "/${wallpapers_left[0]}/d" $wallpapers_left_path
+
+echo -e "  Selected the wallpaper: ${bold_green}\"${wallpapers_left[0]}\"${end},
+       \r  and removed it from ${bold_white}\"wallpapers_left.txt\"${end}."

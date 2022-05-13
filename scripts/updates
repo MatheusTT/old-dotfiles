@@ -1,0 +1,130 @@
+#!/bin/bash
+
+source ~/scripts/colors.conf
+
+
+pacman_pkgs=$(pacman -Qu --color always)
+pacman_pkgs_number=$(echo "$pacman_pkgs" | sed "/^$/d" | wc -l)
+
+aur_pkgs=$(paru -Qua --color always)
+aur_pkgs_number=$(echo "$aur_pkgs" | sed "/^$/d" | wc -l)
+
+flatpaks=$(flatpak remote-ls --updates --columns=name,branch)
+flatpaks_number=$(echo "$flatpaks" | sed "/^$/d" | wc -l)
+
+
+get() {
+  total=$(( $pacman_pkgs_number + $aur_pkgs_number + $flatpaks_number ))
+  
+
+  if [[ $total -ne 0 ]]; then
+    if [[ $verbose -ne 1 ]]; then
+      echo $total
+    else
+      echo -e "\n${bold_red}[󱇬 ]${bold_gray} Total packages ${bold_red}($total)${end}"
+      if [[ $pacman_pkgs_number -ne 0 ]]; then
+        echo -e "  ${bold_yellow}[󰮯 ]${bold_gray} Pacman packages ${bold_yellow}($pacman_pkgs_number)${end}"
+        awk '{ print "    " $0 }' <<< "$pacman_pkgs"
+      fi
+      if [[ $aur_pkgs_number -ne 0 ]]; then
+        echo -e "\n  ${bold_green}[󰣇 ]${bold_gray} AUR packages ${bold_green}($aur_pkgs_number)${end}"
+        awk '{ print "    " $0 }' <<< "$aur_pkgs"
+      fi
+      if [[ $flatpaks_number -ne 0 ]]; then
+        echo -e "\n  ${bold_blue}[󰏗 ]${bold_gray} Flatpak packages ${bold_blue}($flatpaks_number)${end}"
+        awk '{ print "    " $0 }' <<< "$flatpaks"
+      fi
+    fi
+  else
+    echo 0
+  fi
+}
+
+write() {
+  verbose=0
+  cat << EOF > ~/.cache/.updates_available
+total:   $(get)
+pacman:  ${pacman_pkgs_number}
+aur:     ${aur_pkgs_number}
+flatpak: ${flatpaks_number}
+EOF
+}
+
+update_archlinux_keyring() {
+  if "${pacman_pkgs[@]}" =~ "archlinux-keyring"; then
+    sudo pacman -Sy archlinux-keyring
+  fi
+}
+
+update() {
+  verbose=1
+  get
+  printf "\n${bold_magenta}[ ? ]${bold_gray} " && read -p "Update all ? " input
+  for w in "$input" ; do
+    case "$w" in
+      [yY]|[yY][eE][sS])
+        update_archlinux_keyring
+        echo -e "${bold_yellow}[󰮯 ]${bold_gray} Updating pacman packages${end}"
+        sudo pacman -Syyu
+
+        echo -e "\n${bold_green}[󰣇 ]${bold_gray} Updating AUR packages${end}"
+        paru -Syua
+
+        echo -e "\n${bold_blue}[󰏗 ]${bold_gray} Updating flatpak packages${end}"
+        flatpak -y update
+
+        break
+        ;;
+      pacman)
+        update_archlinux_keyring
+        echo -e "${bold_yellow}[󰮯 ]${bold_gray} Updating pacman packages${end}"
+        sudo pacman -Syyu --noconfirm
+        ;;
+      aur|AUR)
+        update_archlinux_keyring
+        echo -e "\n${bold_green}[󰣇 ]${bold_gray} Updating AUR packages${end}"
+        paru -Syua --noconfirm
+        ;;
+      flatpak)
+        echo -e "\n${bold_blue}[󰏗 ]${bold_gray} Updating flatpak packages${end}"
+        flatpak -y update
+        ;;
+      *)
+        ;;
+    esac
+  done
+  echo -e "\n${bold_green}[󰸞 ]${bold_gray} Done - Press enter to exit${end}" && read
+}
+
+_shutdown() {
+  if [[ $(awk '/total/ { print $2 }' ~/.cache/.updates_available) -gt 100 ]] ; then
+    if [[ "$(nmcli networking connectivity)" != "none" ]] ; then
+      kitty sh -c "~/scripts/updates update"
+      sh -c "~/scripts/updates write"
+      [[ $(awk '/total/ { print $2 }' ~/.cache/.updates_available) -eq 0 ]] && shutdown now
+    fi
+  else
+    shutdown now
+  fi
+}
+
+
+while [[ "$1" ]]; do
+  case "$1" in
+    -v|--verbose)
+      verbose=1
+      ;;
+    get)
+      get       ; exit
+      ;;
+    write)
+      write     ; exit
+      ;;
+    update)
+      update    ; exit
+      ;;
+    shutdown)
+      _shutdown ; exit
+ esac
+ shift 
+done

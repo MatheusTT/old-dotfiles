@@ -1,0 +1,21 @@
+#!/bin/bash
+
+get() {
+  brightnessctl | awk -F "[()]" '/%/ { print $2 }'
+}
+
+down() {
+  if [[ "$(get)" != "10%" ]]; then
+    brightnessctl set 10%-
+  fi
+}
+
+
+while [[ "$1" ]]; do
+  case $1 in
+    get)  get                    ; exit ;;
+    up)   brightnessctl set +10% ; exit ;;
+    down) down                   ; exit ;;
+  esac
+  shift
+done

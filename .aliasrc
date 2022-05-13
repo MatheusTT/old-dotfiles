@@ -1,0 +1,101 @@
+#!/bin/bash
+
+source /home/broa/scripts/colors.conf
+
+## Aliases ##
+# Utility commands
+alias ls=' lsd -X   --group-dirs first'
+alias la=' lsd -AX  --group-dirs first'
+alias lla='lsd -lAX --group-dirs first'
+
+alias mkdir='printf "${bold_green}" && mkdir -pv'
+alias back='cd $OLDPWD'
+alias :q='exit'
+
+# Other commands
+alias neo='nvim'
+alias bat='bat --number --theme Dracula'
+alias clipboard='xclip -selection clipboard'
+alias ytdl='yt-dlp -f "bv*+ba/b" -o "~/Downloads/%(title)s.%(ext)s"'
+
+# System
+#alias sus='sudo systemctl'
+alias ua='~/scripts/updates -v get'
+alias cleanup='doas pacman -Rns $(pacman -Qtdq)'
+alias grub-update='doas grub-mkconfig -o /boot/grub/grub.cfg'
+
+alias cpu-prf='doas cpupower frequency-set -g performance -d 3.6GHz -u 4.6GHz'
+alias cpu-pwr='doas cpupower frequency-set -g  powersave  -d 0.8GHz -u 2.1GHz'
+alias cpu-inf='cpupower frequency-info'
+
+alias wifi-available='nmcli -f IN-USE,SSID,BARS,RATE,SECURITY device wifi list'
+alias wifi-connect='nmcli device wifi connect'
+
+
+## Functions ##
+ex() {
+  if [[ -f $1 ]] ; then
+    case $1 in
+        *.tar.bz2)  tar xjf    $1  ;;
+        *.tar.gz)   tar xzf    $1  ;;
+        *.bz2)      bunzip2    $1  ;;
+        *.rar)      rar x      $1  ;;
+        *.gz)       gunzip     $1  ;;
+        *.tar)      tar xf     $1  ;;
+        *.tbz2)     tar xjf    $1  ;;
+        *.tgz)      tar xzf    $1  ;;
+        *.zip)      unzip      $1  ;;
+        *.Z)        uncompress $1  ;;
+        *.7z)       7z x       $1  ;;
+        *)          echo "${bold_red}\"$1\" cannot be extracted via extract().${end}" ;;
+    esac
+  else
+    echo -e "${bold_red}\"$1\" is not a valid file.${end}"
+  fi
+}
+
+
+mksh() {
+  if [[ ! -e $1 ]]; then
+    if [[ -d $(dirname "$1") ]]; then
+      echo "#!/bin/bash" > $1 
+      chmod +x $1
+    fi
+  fi
+}
+
+mkcd() {
+  if [[ ! -d $1 ]] ; then
+    /bin/mkdir $1 && cd $1 
+  else
+    cd $1
+  fi
+}
+
+grepn() {
+  grep -n "$1" $2 | cut -d ":" -f 1
+}
+
+fix-pacman-nopgp() {
+  doas rm -r /var/lib/pacman/sync
+  doas pacman -Syy
+}
+
+weather() {
+  python -c 'import sys,requests
+city = "Curitiba"
+resp = requests.get("https://wttr.in/" + city.replace(" ", "+"))
+print(resp.text)'
+}
+
+
+## Miscellaneous ##
+alias rr='curl -s -L http://bit.ly/10hA8iC | bash'
+alias tf='cd ~/.local/share/Steam/steamapps/common/Team\ Fortress\ 2/tf/'
+
+start-server() {
+  server_path="/home/broa/.games/$(grep "$1" <<< "$(ls ~/.games)")"
+  [[ -d $server_path ]] && cd $server_path &&
+  java -Xms1G -Xmx1G -jar server.jar --nogui &&
+  cd $OLDPWD
+}

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+source ~/scripts/colors.conf
+
+
+optimus_line=$(grep -n "optimus-manager.startup=" /etc/default/grub | cut -d ":" -f 1)
+poly_battery_line=$(grep -n "full-at =" ~/.config/polybar/config | cut -d ":" -f 1)
+
+current_mode=$(awk -F "optimus-manager.startup=" '/optimus/ { print $2 }' /etc/default/grub | tr -d '"')
+mode_to_change=$(sed "s/$current_mode//" <<< "integratedhybrid")
+
+change-mode() {
+  if [[ "$mode_to_change" == "hybrid" ]] ; then
+    echo -e "${bold_green}$(doas ipman --enable)${end}"
+#    sed -i "$poly_battery_line s/100/55/" ~/.config/polybar/config
+    echo "55%" > ~/.cache/.poly_battery
+    grub_text="\nChanged ${bold_green}\"$current_mode\"${end} to ${bold_red}\"$mode_to_change\"${end} in /etc/default/grub."
+  else
+    echo -e "${bold_green}$(doas ipman --disable)${end}"
+#   sed -i "$poly_battery_line s/55/100/" ~/.config/polybar/config
+    echo "100%" > ~/.cache/.poly_battery
+    grub_text="\nChanged ${bold_red}\"$current_mode\"${end} to ${bold_green}\"$mode_to_change\"${end} in /etc/default/grub."
+  fi
+  
+  doas sed -i "$optimus_line s/$current_mode/$mode_to_change/" /etc/default/grub &&
+  echo -e "$grub_text" &&
+  
+  doas grub-mkconfig -o /boot/grub/grub.cfg &&
+  echo -e "\n${bold_green}GRUB updated.${end}\nYou must reboot for the changes to work." 
+}
+
+_status() {
+  echo -e "
+  Current mode: ${bold_blue}$current_mode${end}
+  ipman status: ${bold_blue}$(ipman --status | awk -F ": " '{print $2}')${end}
+  (ENABLED means the battery will charge up to 55-60%)
+  "
+}
+
+_help() {
+  echo -e "
+  This is a script made to change between \"hybrid\" or \"integrated\" GPUs using optimus-manager,
+  and change the battery conservation mode on Lenovo notebooks.
+
+  Usage:
+  --status -s| Show the current mode
+  --help   -h| Show this message
+  nothing    | Change mode
+  "
+}
+
+case $1 in
+  --status|-s)
+    _status
+    ;;
+  --help|-h)
+    _help
+    ;;
+  *)
+    change-mode
+    ;;
+esac

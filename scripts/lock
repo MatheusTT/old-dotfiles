@@ -1,0 +1,57 @@
+#!/bin/bash
+
+icon_font="Material-Design-Icons"
+font="JetBrains Mono Medium Nerd Font Complete"
+image_path="/tmp/desktop.png"
+
+background_ring="#282c34"
+background_inside="#1e222acc"
+background_inside_no_opacity="#1e222a"
+font_color="#abb2bf"
+green="#98c379"
+red="#e06c75"
+blue="#61afef"
+
+# Screenshot, blur, darkens the image and add a lock icon
+maim -u | convert /dev/stdin \
+  -blur 0x6 \
+  -gamma 0.6 \
+  -gravity Center \
+  -font $icon_font \
+  -pointsize 80 \
+  -fill white -stroke black -strokewidth 2 \
+  -annotate +0-3 󰌾 \
+  $image_path
+
+setxkbmap br
+
+i3lock \
+  --nofork \
+  --ignore-empty-password \
+  --no-modkey-text \
+  --radius 100 \
+  --ring-width 8.0 \
+  --keyhl-color=$green \
+  --bshl-color=$red \
+  --line-uses-inside \
+  --separator-color=$background_ring \
+  --inside-color=$background_inside \
+  --insidever-color=$background_inside_no_opacity \
+  --insidewrong-color=$background_inside_no_opacity \
+  --ring-color=$background_ring \
+  --ringver-color=$blue \
+  --ringwrong-color=$red \
+  --clock \
+  --{time,date,greeter,verif,wrong}-color=$font_color \
+  --{time,date,greeter,verif,wrong}-font=$font \
+  --time-size=48 \
+  --{date,greeter,verif,wrong}-size=24 \
+  --time-str="%H:%M" \
+  --date-str="%A, %d/%m/%Y" \
+  --greeter-text="Type the password to unlock" \
+  --time-pos="960:100" \
+  --{verif,wrong}-pos="960:545" \
+  --greeter-pos="960:750" \
+  -i $image_path --fill
+
+[[ -f $image_path ]] && rm $image_path

@@ -1,0 +1,24 @@
+* {
+  foreground: #f8f8f2;
+  background: #151515;
+
+  element-selected-bgcolor: #282a36;
+  entry-bgcolor: #383a59;
+  prompt-bgcolor: #50fa7b;
+
+/*c-light-gray: #c6c6c6;*/
+
+  text-color: @foreground;
+  background-color: @background;
+  opacity:          75.0000% ;
+
+  accent:           #A9C03F;
+//background:       #141c21;
+  background-light: #1C252A;
+//foreground:       #93a1a1;
+  on:               #5BB462;
+  off:              #DE635E;
+}
+
+
+/* vim:ft=css

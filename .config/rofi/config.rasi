@@ -1,0 +1,9 @@
+configuration {
+  modi:        "drun";
+  font:        "JetBrainsMono Nerd Font Bold 16";
+  show-icons:  true;
+  icon-theme:  "Papirus";
+}
+
+@theme "dracula"
+/* vim:ft=css

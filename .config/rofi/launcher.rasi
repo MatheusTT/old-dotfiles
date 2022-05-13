@@ -1,0 +1,91 @@
+configuration {   
+  display-drun:        "run";
+  drun-display-format: "{name}";
+}
+
+@theme "dracula"
+
+* {
+  border:  0;
+  margin:  0;
+  padding: 0;
+  spacing: 0;
+}
+
+element {
+//text-color:        inherit;
+//background-color:  inherit;
+  padding:           1.5% 0% 1.5%;
+  border-radius:     4;
+  margin:            8px;
+  orientation:       vertical;
+}
+
+element-icon {
+  background-color:  inherit;
+  size:              48px;
+  margin:            0% 0% 1% 0%;
+  horizontal-align:  0.5;
+  vertical-align:    0.5;
+}
+
+element selected {
+  background-color:  @element-selected-bgcolor;
+}
+
+element-text {
+//text-color:        inherit;
+  background-color:  inherit;
+//font:              "Fira Sans Medium 14";
+  font:              "JetBrainsMono Nerd Font Medium 14";
+
+  horizontal-align:  0.5;
+  vertical-align:    0.5;
+}
+
+entry {
+  background-color:  @entry-bgcolor;
+  padding:           12 12 12 24;
+  border:            0 0 0 -12;
+//text-color:        inherit;
+  border-radius:     0 4 4 0;
+}
+
+inputbar {
+  children:          [prompt, entry];
+  padding:           4;
+}
+
+listview {
+//background-color:  @c-dark-gray;
+  padding:           10 -4 0;
+  columns:           3;
+  lines:             4;
+
+  dynamic:           true;
+  fixed-height:      false;
+}
+
+mainbox {
+//background-color:  @c-dark-gray;
+  children:          [inputbar, listview];
+  border:            16;
+}
+
+prompt {
+  enabled:           true;
+  background-color:  @prompt-bgcolor;
+  padding:           12 18 12 12;
+  text-color:        @background;
+  border-radius:     4;
+}
+
+window {
+  location:          center;
+  transparency:      "real";
+  border-radius:     8;
+  y-offset:         -10%;
+  width:             34%;
+}
+
+/* vim:ft=css

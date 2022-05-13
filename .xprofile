@@ -1,0 +1,14 @@
+#!/bin/bash
+
+setxkbmap br &
+numlockx on &
+xset -b r rate 500 30 s 900 &
+xsetroot -cursor_name left_ptr &
+redshift -PO 4200 &
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+xss-lock --transfer-sleep-lock -- ~/scripts/lock &
+
+dunst &
+picom &
+flameshot &
+~/scripts/random-wallpaper &
