@@ -2,6 +2,10 @@
 
 dotfiles_path="$( dirname "${BASH_SOURCE[0]}" )"
 
+# Change this to "false" if you don't wanna
+# install LightDM and use my config with it.
+install_lightdm=true
+
 # installing an AUR helper
 if ( ! pacman -Qs "^paru" 1>/dev/null ) ; then
     cd /tmp && git clone --depth=1 https://aur.archlinux.org/paru.git 1>/dev/null
@@ -10,7 +14,7 @@ fi
 
 # installing programs
 sudo pacman -S --needed --noconfirm xss-lock kitty rofi feh redshift playerctl pulsemixer dunst \
-  flameshot polkit-gnome brightnessctl numlockx xorg-{setxkbmap,xset,xsetroot} lightdm-gtk-greeter-settings \
+  flameshot polkit-gnome brightnessctl numlockx xorg-{setxkbmap,xset,xsetroot} \
   nodejs-material-design-icons ttf-jetbrains-mono ttf-fira-{code,mono,sans} wget bat btop \
   bspwm sxhkd polybar ranger papirus-icon-theme cmatrix neofetch typespeed libpulse xclip
 
@@ -63,9 +67,11 @@ ln -sf $dotfiles_path/.config/nvim/lua/custom ~/.config/nvim/lua/custom
 sudo cp -r $dotfiles_path/usr/share/themes/TokyoNight /usr/share/themes/TokyoNight
 
 # configuring lightdm-gtk-greeter
-sudo systemctl enable lightdm
+if ( $install_lightdm ); then
+  sudo pacman -S lightdm-gtk-greeter-settings
+  sudo systemctl enable lightdm
 
-sudo su -c "cat << EOF > /etc/lightdm/lightdm-gtk-greeter.conf
+  sudo su -c "cat << EOF > /etc/lightdm/lightdm-gtk-greeter.conf
 [greeter]
 theme-name = TokyoNight
 icon-theme-name = Papirus
@@ -77,4 +83,4 @@ indicators = ~session;~layout;~spacer;~clock;~spacer;~power
 background = /usr/share/pixmaps/beach.jpg
 user-background = false
 EOF"
-
+fi
