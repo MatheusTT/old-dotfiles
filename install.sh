@@ -64,7 +64,11 @@ done
 
 # NvChad custom/chadrc.lua and TokyoNight GTK theme 
 ln -sf $dotfiles_path/.config/nvim/lua/custom ~/.config/nvim/lua/custom
-sudo cp -r $dotfiles_path/usr/share/themes/TokyoNight /usr/share/themes/TokyoNight
+
+temp_tokyo_path="/tmp/tokyo-gtk"
+git clone https://github.com/stronk-dev/Tokyo-Night-Linux.git $temp_tokyo_path
+sudo cp -r $temp_tokyo_path/usr/share/themes/TokyoNight /usr/share/themes/TokyoNight
+rm -rf $temp_tokyo_path
 
 # configuring lightdm-gtk-greeter
 if ( $install_lightdm ); then
