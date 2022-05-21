@@ -29,7 +29,7 @@ bspc rule -a vlc             desktop='^2'
 bspc rule -a discord         desktop='^3'
 bspc rule -a Spotify         desktop='^4'
 bspc rule -a Steam           desktop='^6'
-bspc rule -a 'Steam:*:Friends List' desktop='^6' state=floating
+bspc rule -a "Steam:*:Friends List" desktop='^6' state=floating
 bspc rule -a TelegramDesktop desktop='^6'
 bspc rule -a Lutris          desktop='^7'
 bspc rule -a Gimp-2.10       desktop='^7'
@@ -40,6 +40,14 @@ bspc rule -a Evince          desktop='^8'
 bspc rule -a feh                state=floating
 bspc rule -a Org.gnome.Nautilus state=floating
 
+monitor_width=1920
+monitor_heigh=1080
+pip_width=$(($monitor_width / 4))
+pip_heigh=$(($monitor_heigh / 4))
+bspc rule -a "*:*:Picture-in-picture" \
+  state=floating \
+  rectangle=${pip_width}x${pip_heigh}+$(($monitor_width - $pip_width - 12))+$(($monitor_heigh - $pip_heigh - 12))
+
 # games
 bspc rule -a robloxplayerlauncher.exe desktop='^2' state=floating
 bspc rule -a robloxplayerbeta.exe     desktop='^5'
@@ -49,7 +57,7 @@ steamlib=$HOME/.steam/steam/
 mygames=$(ls $steamlib/steamapps/appmanifest_*.acf | sed 's/[^0-9]*//g')
 
 for game in $mygames; do
-  bspc rule -a steam_app_$game desktop=^5
+  bspc rule -a steam_app_$game desktop='^5'
 done
 
 

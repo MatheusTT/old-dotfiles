@@ -4,20 +4,16 @@ source ~/scripts/colors.conf
 
 
 optimus_line=$(grep -n "optimus-manager.startup=" /etc/default/grub | cut -d ":" -f 1)
-poly_battery_line=$(grep -n "full-at =" ~/.config/polybar/config | cut -d ":" -f 1)
-
-current_mode=$(awk -F "optimus-manager.startup=" '/optimus/ { print $2 }' /etc/default/grub | tr -d '"')
+current_mode=$(awk -F= '/startup=/ { gsub("\"",""); print $NF }' /etc/default/grub)
 mode_to_change=$(sed "s/$current_mode//" <<< "integratedhybrid")
 
 change-mode() {
   if [[ "$mode_to_change" == "hybrid" ]] ; then
     echo -e "${bold_green}$(doas ipman --enable)${end}"
-#    sed -i "$poly_battery_line s/100/55/" ~/.config/polybar/config
     echo "55%" > ~/.cache/.poly_battery
     grub_text="\nChanged ${bold_green}\"$current_mode\"${end} to ${bold_red}\"$mode_to_change\"${end} in /etc/default/grub."
   else
     echo -e "${bold_green}$(doas ipman --disable)${end}"
-#   sed -i "$poly_battery_line s/55/100/" ~/.config/polybar/config
     echo "100%" > ~/.cache/.poly_battery
     grub_text="\nChanged ${bold_red}\"$current_mode\"${end} to ${bold_green}\"$mode_to_change\"${end} in /etc/default/grub."
   fi
