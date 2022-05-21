@@ -16,9 +16,10 @@ fi
 sudo pacman -S --needed --noconfirm xss-lock kitty rofi feh redshift playerctl pulsemixer dunst \
   flameshot polkit-gnome brightnessctl numlockx xorg-{setxkbmap,xset,xsetroot} \
   nodejs-material-design-icons ttf-jetbrains-mono ttf-fira-{code,mono,sans} wget bat btop \
-  bspwm sxhkd polybar ranger papirus-icon-theme cmatrix neofetch typespeed libpulse xclip
+  bspwm sxhkd polybar ranger papirus-icon-theme cmatrix neofetch typespeed libpulse xclip yt-dlp ipman lsd
 
-paru -S --needed --noconfirm i3lock-color-git zscroll-git picom-jonaburg-git nerd-fonts-{jetbrains-mono,fira-code} xcursor-breeze pipes.sh rxfetch pfetch thokr-git
+paru -S --needed --noconfirm i3lock-color-git zscroll-git picom-jonaburg-git nerd-fonts-{jetbrains-mono,fira-code} \
+  xcursor-breeze pipes.sh rxfetch pfetch thokr-git
 
 
 # installing oh my zsh and the plugins
