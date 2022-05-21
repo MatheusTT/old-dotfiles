@@ -13,6 +13,8 @@ _flatpak=$(flatpak remote-ls --updates --columns=name,branch)
 _flatpak_number=$(sed "/^$/d" <<< "$_flatpak" | wc -l)
 
 _total=$(( $_pacman_number + $_aur_number + $_flatpak_number ))
+max_packages=100
+cache_file=~/.cache/.updates_available
 
 
 get() {
@@ -40,7 +42,7 @@ get() {
 }
 
 write() {
-  cat << EOF > ~/.cache/.updates_available
+  cat << EOF > $cache_file
 total:   ${_total}
 pacman:  ${_pacman_number}
 aur:     ${_aur_number}
@@ -48,20 +50,14 @@ flatpak: ${_flatpak_number}
 EOF
 }
 
-update_archlinux_keyring() {
-  if "${_pacman[@]}" =~ "archlinux-keyring"; then
-    sudo pacman -Sy archlinux-keyring
-  fi
-}
 
 update() {
   verbose=1
   get
   printf "\n${bold_magenta}[ ? ]${bold_gray} " && read -p "Update all ? " input
-  for w in "$input" ; do
+  for w in "$input"; do
     case "$w" in
       [yY]|[yY][eE][sS])
-        update_archlinux_keyring
         echo -e "${bold_yellow}[󰮯 ]${bold_gray} Updating pacman packages${end}"
         sudo pacman -Syyu
 
@@ -74,12 +70,10 @@ update() {
         break
         ;;
       pacman)
-        update_archlinux_keyring
         echo -e "${bold_yellow}[󰮯 ]${bold_gray} Updating pacman packages${end}"
         sudo pacman -Syyu --noconfirm
         ;;
       aur|AUR)
-        update_archlinux_keyring
         echo -e "\n${bold_green}[󰣇 ]${bold_gray} Updating AUR packages${end}"
         paru -Syua --noconfirm
         ;;
@@ -95,11 +89,11 @@ update() {
 }
 
 _shutdown() {
-  if [[ $(awk '/_total/ { print $2 }' ~/.cache/.updates_available) -gt 100 ]] ; then
-    if [[ "$(nmcli networking connectivity)" != "none" ]] ; then
-      kitty sh -c "~/scripts/updates update"
+  if [[ $(awk '/_total/ { print $2 }' $cache_file) -gt $max_packages ]]; then
+    if [[ "$(nmcli networking connectivity)" != "none" ]]; then
+      kitty sh -c "~/scripts/updates update" &&
       sh -c "~/scripts/updates write"
-      [[ $(awk '/_total/ { print $2 }' ~/.cache/.updates_available) -eq 0 ]] && shutdown now
+      [[ $(awk '/_total/ { print $2 }' $cache_file) -eq 0 ]] && shutdown now
     fi
   else
     shutdown now
