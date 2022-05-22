@@ -18,7 +18,7 @@ display_song() {
   wait
 }
 change_volume() {
-  spotify_id=$( pulsemixer --list-sinks | awk -F "[-,]" '/spotify/ { print $3 }' )
+  spotify_id=$(pulsemixer --list-sinks | awk -F"[-,]" '/spotify/ { print $3 }')
 
   case "$1" in
     up)
@@ -28,6 +28,9 @@ change_volume() {
       pulsemixer --id "$spotify_id" --change-volume -5
       ;;
   esac
+
+  current_volume=$(pulsemixer --id "$spotify_id" --get-volume | awk '{ print $1 }')
+  notify-send -h int:value:${current_volume} "Spotify volume" "Now: ${current_volume}%"
 }
 
 
