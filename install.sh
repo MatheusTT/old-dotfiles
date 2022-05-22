@@ -11,6 +11,9 @@ install_lightdm=true
 # with Spotify
 install_spotify_workaround=true
 
+# Touchpad Gestures app
+install_libinput_gestures=true
+
 # Installing an AUR helper
 if ( ! pacman -Qs "^paru" 1>/dev/null ) ; then
     cd /tmp && git clone --depth=1 https://aur.archlinux.org/paru.git 1>/dev/null
@@ -84,6 +87,12 @@ if ( $install_spotify_workaround ); then
   ln -f .local/share/applications/spotify.desktop ~/.local/share/applications/spotify.desktop
 fi
 
+## LibInput Gestures
+if ( $install_libinput_gestures ); then
+  paru -S libinput-gestures
+  ln -sf .config/libinput-gestures.conf ~/.config/libinput-gestures.conf
+  libinput-gestures-setup autostart start
+fi
 
 ## Configuring lightdm-gtk-greeter
 if ( $install_lightdm ); then
