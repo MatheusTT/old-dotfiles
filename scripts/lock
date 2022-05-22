@@ -12,18 +12,37 @@ green="#98c379"
 red="#e06c75"
 blue="#61afef"
 
-# Screenshot, blur, darkens the image and add a lock icon
-maim -u | convert /dev/stdin \
-  -blur 0x6 \
-  -gamma 0.6 \
-  -gravity Center \
-  -font $icon_font \
-  -pointsize 80 \
-  -fill white -stroke black -strokewidth 2 \
-  -annotate +0-3 󰌾 \
-  $image_path
+player_status="$(playerctl status)"
 
-setxkbmap br
+pre_lock() {
+  # Screenshot, blur, darkens the image and add a lock icon
+  maim -u | convert /dev/stdin \
+    -blur 0x6 \
+    -gamma 0.6 \
+    -gravity Center \
+    -font $icon_font \
+    -pointsize 80 \
+    -fill white -stroke black -strokewidth 2 \
+    -annotate +0-3 󰌾 \
+    $image_path
+
+  if [[ "$player_status" == "Playing" ]]; then
+    playerctl pause
+  fi
+
+  setxkbmap br
+}
+
+post_lock() {
+  if [[ $player_status == "Playing" ]]; then
+    playerctl play
+  fi
+
+  [[ -f $image_path ]] && rm $image_path
+  setxkbmap br
+}
+
+pre_lock
 
 i3lock \
   --nofork \
@@ -54,4 +73,4 @@ i3lock \
   --greeter-pos="960:750" \
   -i $image_path --fill
 
-[[ -f $image_path ]] && rm $image_path
+post_lock
