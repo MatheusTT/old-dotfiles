@@ -106,7 +106,7 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 
 [[ -f ~/.aliasrc ]] && source ~/.aliasrc
-ZLE_RPROMPT_INDENT=0
+#ZLE_RPROMPT_INDENT=0
 
 bindkey -e
 bindkey "^[[1;5C" forward-word

@@ -55,7 +55,7 @@ super + {F11,F12}
 {_,shift +} Print
     flameshot {gui,full --path ~/Pictures/screenshots}
 
-
+#
 # custom bspwm hotkeys
 #
 # change to the next workspace active
@@ -71,17 +71,9 @@ alt + Tab
 super + alt + {q,r}
     bspc {quit,wm -r}
 
-# close and kill
-super + {shift + q, k}
-    bspc node -{c,k}
-
-
-
-super + shift + q 
+# close
+super + shift + q
     bspc node -c
-
-super + k
-    bspc node -k
 
 # alternate between the tiled and monocle layout
 super + m
@@ -176,3 +168,5 @@ super + alt + shift + {h,j,k,l}
 # move a floating window
 super + {Left,Down,Up,Right}
     bspc node -v {-20 0,0 20,0 -20,20 0}
+
+# vim: ft=cfg

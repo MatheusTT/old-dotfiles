@@ -22,7 +22,7 @@ get() {
     if [[ $verbose -ne 1 ]]; then
       echo $_total
     else
-      echo -e "\n${bold_red}[󱇬 ]${bold_gray} Total packages ${bold_red}($total)${end}"
+      echo -e "\n${bold_red}[󱇬 ]${bold_gray} Total packages ${bold_red}($_total)${end}"
       if [[ $_pacman_number -ne 0 ]]; then
         echo -e "  ${bold_yellow}[󰮯 ]${bold_gray} Pacman packages ${bold_yellow}($_pacman_number)${end}"
         awk '{ print "    " $0 }' <<< "$_pacman"
