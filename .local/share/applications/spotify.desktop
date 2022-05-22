@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Spotify
+GenericName=Music Player
+Icon=spotify-client
+Exec=/home/broa/.local/bin/spotify-workaround
+Terminal=false
+MimeType=x-scheme-handler/spotify;
+Categories=Audio;Music;Player;AudioVideo;
+StartupWMClass=Spotify

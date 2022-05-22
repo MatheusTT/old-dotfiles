@@ -1,0 +1,10 @@
+#!/bin/bash
+
+spotify --uri=%U &
+app="Spotify"
+
+while [[ $(xprop -name $app WM_CLASS | awk -F '[""]' '{ print $2 }') != "${app,,}" ]]; do
+  sleep 0.25
+done
+
+bspc node -d 4 $(xdotool search --class $app)
