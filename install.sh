@@ -68,6 +68,9 @@ paths=(
   )
 
 for i in ${paths[@]} ; do
+  if [[ -e $HOME/$i ]]; then
+    mv $HOME/$i $HOME/$i.backup
+  fi
   ln -sf $dotfiles_path/$i ~/$i 
 done
 
@@ -76,21 +79,21 @@ done
 ln -sf $dotfiles_path/.config/nvim/lua/custom ~/.config/nvim/lua/custom
 
 ## TokyoNight GTK theme
-temp_tokyo_path="/tmp/tokyo-gtk"
-git clone https://github.com/stronk-dev/Tokyo-Night-Linux.git $temp_tokyo_path
-sudo cp -r $temp_tokyo_path/usr/share/themes/TokyoNight /usr/share/themes/TokyoNight
-rm -rf $temp_tokyo_path
+git clone https://github.com/stronk-dev/Tokyo-Night-Linux.git /tmp/tokyo-gtk
+sudo cp -r /tmp/tokyo-gtk/usr/share/themes/TokyoNight /usr/share/themes/TokyoNight
+rm -rf /tmp/tokyo-gtk
 
 ## Spotify Workaround
 if ( $install_spotify_workaround ); then
-  ln -f .local/bin/spotify-workaround ~/.local/bin/spotify-workaround
-  ln -f .local/share/applications/spotify.desktop ~/.local/share/applications/spotify.desktop
+  [[ -d $HOME/.local/bin ]] || mkdir -p $HOME/.local/bin
+  ln -f $dotfiles_path/.local/bin/spotify-workaround ~/.local/bin/spotify-workaround
+  ln -f $dotfiles_path/.local/share/applications/spotify.desktop ~/.local/share/applications/spotify.desktop
 fi
 
 ## LibInput Gestures
 if ( $install_libinput_gestures ); then
   paru -S libinput-gestures
-  ln -sf .config/libinput-gestures.conf ~/.config/libinput-gestures.conf
+  ln -sf $dotfiles_path/.config/libinput-gestures.conf ~/.config/libinput-gestures.conf
   libinput-gestures-setup autostart start
 fi
 
@@ -108,7 +111,5 @@ cursor-theme-size = 0
 font-name = Fira Sans 12
 clock-format = %A, %H:%M
 indicators = ~session;~layout;~spacer;~clock;~spacer;~power
-background = /usr/share/pixmaps/beach.jpg
-user-background = false
 EOF"
 fi
