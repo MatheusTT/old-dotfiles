@@ -8,11 +8,14 @@ install_lightdm=true
 
 # Small script made to redirect Spotify to
 # a desktop, because bspc rule doesn't work
-# with Spotify
+# with Spotify.
 install_spotify_workaround=true
 
-# Touchpad Gestures app
+# Touchpad Gestures app.
 install_libinput_gestures=true
+
+# Installs my collection of wallpapers.
+install_wallpapers=true
 
 # Installing an AUR helper
 if ( ! pacman -Qs "^paru" 1>/dev/null ) ; then
@@ -108,4 +111,8 @@ font-name = Fira Sans 12
 clock-format = %A, %H:%M
 indicators = ~session;~layout;~spacer;~clock;~spacer;~power
 EOF"
+fi
+
+if ( $install_wallpapers ); then
+  git clone https://github.com/MatheusTT/wallpapers ~/Pictures/wallpapers
 fi
