@@ -58,7 +58,7 @@ paths=(
   .config/ranger/rc.conf
   .config/rofi
   .config/sxhkd
-  .config/picom.confi
+  .config/picom.conf
   .config/user-dirs.dirs
   scripts
   .aliasrc
