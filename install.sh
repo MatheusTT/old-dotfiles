@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dotfiles_path="$( dirname "${BASH_SOURCE[0]}" )"
+dotfiles_path="$(realpath $(dirname "${BASH_SOURCE[@]}"))"
 
 # Change this to "false" if you don't wanna
 # install LightDM and use my config with it.
@@ -24,7 +24,7 @@ if ( ! pacman -Qs "^paru" 1>/dev/null ) ; then
 fi
 
 # Installing programs
-sudo pacman -S --needed --noconfirm xss-lock kitty rofi feh redshift playerctl pulsemixer dunst flameshot polkit-gnome brightnessctl numlockx xorg-{setxkbmap,xset,xsetroot} nodejs-material-design-icons ttf-jetbrains-mono ttf-fira-{code,mono,sans} wget bat btop bspwm sxhkd polybar ranger papirus-icon-theme cmatrix neofetch typespeed libpulse xclip yt-dlp lsd
+sudo pacman -S --needed --noconfirm xss-lock kitty rofi feh redshift playerctl pulsemixer dunst flameshot polkit-gnome brightnessctl numlockx xorg-{setxkbmap,xset,xsetroot} nodejs-material-design-icons ttf-jetbrains-mono ttf-fira-{code,mono,sans} wget bat btop bspwm sxhkd polybar ranger papirus-icon-theme cmatrix neofetch typespeed libpulse xclip yt-dlp lsd maim nautilus
 
 paru -S --needed --noconfirm i3lock-color-git zscroll-git picom-jonaburg-git nerd-fonts-{jetbrains-mono,fira-code} xcursor-breeze pipes.sh rxfetch pfetch thokr-git ipman spotify
 
@@ -51,6 +51,7 @@ paths=(
   .config/btop/btop.conf
   .config/dunst
   .config/flameshot
+  .config/gtk-3.0/settings.ini
   .config/kitty
   .config/picom 
   .config/polybar
@@ -66,6 +67,10 @@ paths=(
   .zshrc
   )
 
+# Creating dirs
+mkdir -p $HOME/.config/{btop,gtk-3.0}
+
+# Linking files
 for i in ${paths[@]} ; do
   if [[ -e $HOME/$i ]]; then
     mv $HOME/$i $HOME/$i.backup
@@ -81,18 +86,22 @@ ln -sf $dotfiles_path/.config/nvim/lua/custom ~/.config/nvim/lua/custom
 git clone https://github.com/stronk-dev/Tokyo-Night-Linux.git /tmp/tokyo-gtk
 sudo cp -r /tmp/tokyo-gtk/usr/share/themes/TokyoNight /usr/share/themes/TokyoNight
 rm -rf /tmp/tokyo-gtk
+CURRENT_USER="$(whoami)"
+sudo su -c "ln -sf /home/$CURRENT_USER/.config/gtk-3.0/settings.ini /root/.config/gtk-3.0/settings.ini"
 
 ## Spotify Workaround
 if ( $install_spotify_workaround ); then
   [[ -d $HOME/.local/bin ]] || mkdir -p $HOME/.local/bin
-  ln -f $dotfiles_path/.local/bin/spotify-workaround ~/.local/bin/spotify-workaround
-  ln -f $dotfiles_path/.local/share/applications/spotify.desktop ~/.local/share/applications/spotify.desktop
+  [[ -d $HOME/.local/share ]] || mkdir -p $HOME/.local/share
+  ln -sf $dotfiles_path/.local/bin/spotify-workaround ~/.local/bin/spotify-workaround
+  ln -sf $dotfiles_path/.local/share/applications/spotify.desktop ~/.local/share/applications/spotify.desktop
 fi
 
 ## LibInput Gestures
 if ( $install_libinput_gestures ); then
   paru -S libinput-gestures
   ln -sf $dotfiles_path/.config/libinput-gestures.conf ~/.config/libinput-gestures.conf
+  sudo usermod -a -G input $(whoami)
   libinput-gestures-setup autostart start
 fi
 
@@ -111,6 +120,7 @@ font-name = Fira Sans 12
 clock-format = %A, %H:%M
 indicators = ~session;~layout;~spacer;~clock;~spacer;~power
 EOF"
+sudo sed -i "/#greeter-session=example-gtk-gnome/greeter-session=lightdm-gtk-greeter/" /etc/lightdm/lightdm.conf
 fi
 
 if ( $install_wallpapers ); then
