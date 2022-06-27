@@ -62,6 +62,7 @@ paths=(
   .config/user-dirs.dirs
   scripts
   .aliasrc
+  .gtkrc-2.0
   .p10k.zsh
   .xprofile
   .zshrc
@@ -88,6 +89,7 @@ sudo cp -r /tmp/tokyo-gtk/usr/share/themes/TokyoNight /usr/share/themes/TokyoNig
 rm -rf /tmp/tokyo-gtk
 CURRENT_USER="$(whoami)"
 sudo su -c "ln -sf /home/$CURRENT_USER/.config/gtk-3.0/settings.ini /root/.config/gtk-3.0/settings.ini"
+sudo su -c "ln -sf /home/$CURRENT_USER/.gtkrc-2.0 /root/.config/.gtkrc-2.0"
 
 ## Spotify Workaround
 if ( $install_spotify_workaround ); then

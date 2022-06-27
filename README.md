@@ -49,7 +49,7 @@ Remove the "updates" module in polybar, and comment some lines in "~/dotfiles/.c
   - Cursor Theme: Breeze
 
 # Wallpapers
-  - [Wallpaper used in this rice](https://github.com/MatheusTT/wallpapers/blob/master/morning-lantern-(custom).jpg)  
+  - [Wallpaper used in this rice](https://www.pexels.com/photo/selective-focus-photography-of-turned-on-black-metal-framed-light-sconce-414144/)
   - [My Collection of Wallpapers](https://github.com/MatheusTT/wallpapers)
 
 # Credits

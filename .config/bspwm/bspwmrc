@@ -2,7 +2,7 @@
 
 killall -q sxhkd; sxhkd &
 
-bspc monitor -d 1 2 3 4 5 6 7 8 9
+bspc monitor -d 1 2 3 4 5 6
 
 bspc config pointer_motion_interval 5
 bspc config pointer_follows_monitor true
@@ -25,20 +25,21 @@ bspc config presel_feedback_color "#98c379"
 bspc rule -a kitty           desktop='^1' follow=on
 bspc rule -a Google-chrome   desktop='^2'
 bspc rule -a Brave-browser   desktop='^2'
-bspc rule -a vlc             desktop='^2'
 bspc rule -a discord         desktop='^3'
+bspc rule -a TelegramDesktop desktop='^3'
+bspc rule -a Evince          desktop='^3'
+bspc rule -a vlc             desktop='^4'
+bspc rule -a Code            desktop='^5'
+bspc rule -a Gimp-2.10       desktop='^5'
 bspc rule -a Steam           desktop='^6'
-bspc rule -a TelegramDesktop desktop='^6'
-bspc rule -a Lutris          desktop='^7'
-bspc rule -a Gimp-2.10       desktop='^7'
-bspc rule -a Code            desktop='^7'
-bspc rule -a qBittorrent     desktop='^8'
-bspc rule -a Evince          desktop='^8'
+bspc rule -a Lutris          desktop='^6'
+bspc rule -a qBittorrent     desktop='^6'
 
 bspc rule -a feh                                 state=floating
 bspc rule -a Org.gnome.Nautilus                  state=floating
 bspc rule -a "Steam:*:Friends List" desktop='^6' state=floating
 
+# Chrome Picture-in-picture configuration
 monitor_width=1920
 monitor_heigh=1080
 pip_width=$(($monitor_width / 4))
